@@ -1,0 +1,34 @@
+#include<iostream>
+#include<vector>
+#include<fstream>
+#include<algorithm>
+#include<cstring>
+#define blue  "\033[1m\033[34m"
+#define green "\033[1m\033[32m"
+#define reset "\033[0m"
+using namespace std;
+
+
+enum numberType {MAIN,HOME,WORK,OFFICE,FAX};
+ostream&operator<<(ostream&out,const numberType& type){
+    string output;
+    switch (type) {
+        case numberType::MAIN:
+            output="MAIN";
+            break;
+        case numberType::HOME:
+            output="HOME";
+            break;
+        case numberType::WORK:
+            output="WORK";
+            break;
+        case numberType::OFFICE:
+            output="OFFICE";
+            break;
+        case numberType::FAX:
+            output="FAX";
+            break;
+    }
+    out<<output;
+    return out;
+}
