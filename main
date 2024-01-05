@@ -32,3 +32,241 @@ ostream&operator<<(ostream&out,const numberType& type){
     out<<output;
     return out;
 }
+class Contact{
+private:
+    string name;
+    string lastName;
+    string email;
+    vector<numberType>typeNumber;
+    vector<string>number;
+public:
+    Contact()=default;
+    Contact(string& _name,string & lname,string& _email){
+        name=_name;
+        lastName=lname;
+        email=_email;
+    }
+    friend ostream& operator<<(ostream& out,const Contact& li){
+        out<<li.name<<'\t'<<li.lastName<<'\t'<<li.email<<'\n';
+        for (int i=0;i<li.number.size();i++) {
+            out << li.typeNumber[i]<<'\t'<<li.number[i]<<'\n';
+        }
+        out << endl << "--------------------------------------------------------------" << endl;
+        return out;
+    }
+
+    void addContact(){
+
+        int  i,count1=0;
+        string num;
+        char n;
+
+        system("cls");
+        cout<<green<<"       create contact :  \n\n"<<reset;
+        cin.get();
+
+        while (name.empty()) {
+            cout <<"Enter Contact Name (required) : ";
+            getline(cin,name);
+        }
+
+        while (lastName.empty()) {
+            cout <<"Enter Contact Last Name (required) :";
+            getline(cin,lastName);
+        }
+
+        cout <<"Enter your email :";
+        getline(cin,email);
+
+        while (true) {
+
+            while (num.empty()){
+                cout << "Enter your number (required) : ";
+                cin >> num;
+            }
+
+            number.push_back(num);
+            num="";
+
+            cout << "Choose your number type : \n"
+                    "  1. Main\n"
+                    "  2. Home\n"
+                    "  3. Work\n"
+                    "  4. Office\n"
+                    "  5. Fax\n";
+
+            cin>>i;
+
+            bool test=false;
+
+            while(true) {
+                for (const auto &li:typeNumber) {
+                    if ((i - 1) == li) {
+                        cout << "enter a type different another numbers : ";
+                        cin >> i;
+                        test=true;
+                        break;
+                    }
+                    else
+                        test=false;
+                }
+                if (test!=1)
+                    break;
+            }
+
+            switch (i) {
+                case 1:
+                    typeNumber.push_back(MAIN);
+                    break;
+                case 2:
+                    typeNumber.push_back(HOME);
+                    break;
+                case 3:
+                    typeNumber.push_back(WORK);
+                    break;
+                case 4:
+                    typeNumber.push_back(OFFICE);
+                    break;
+                default:
+                    typeNumber.push_back(FAX);
+                    break;
+            }
+
+            count1++;
+
+            if (count1<5){
+                cout <<green<<"Do you want to add another number (y/n) : "<<reset;
+            }
+            else
+                break;
+
+            cin >> n;
+
+            if (n != 'y' && n != 'Y')  break;
+        }
+    }
+    auto getNumber(){
+        return number;
+    }
+    auto getTypeNumber(){
+        return typeNumber;
+    }
+    auto getName(){
+        return name;
+    }
+    auto getLastName(){
+        return lastName;
+    }
+    auto getEmail(){
+        return email;
+    }
+    void setTypeNumber(string &_type){
+        if (_type=="MAIN")                     typeNumber.push_back(MAIN);
+        else if (_type=="HOME")                typeNumber.push_back(HOME);
+        else if (_type=="WORK")                typeNumber.push_back(WORK);
+        else if (_type=="OFFICE")              typeNumber.push_back(OFFICE);
+        else                                   typeNumber.push_back(FAX);
+    }
+    void setNumber(string& ct){
+        number.push_back(ct);
+    }
+    void popBack(){
+        typeNumber.clear();
+        number.clear();
+    }
+};
+
+void createContact(){
+    Contact contact;
+    contact.addContact();
+    bool b = checkNumber(contact.getNumber());
+    if (b == 1) {
+        phoneBook.push_back(contact);
+        system("cls");
+        cout << blue << "Account created \n" << reset;
+        system("pause");
+    } else {
+        system("cls");
+        cout << blue << "create account faild\n" << reset;
+        system("pause");
+    }
+}
+
+void printContacts(){
+    system("cls");
+    if (phoneBook.empty())
+        cout<<green<<"there is not contacts exit \n"<<reset;
+    else {
+        for (auto &li: phoneBook) {
+            cout<<li;
+        }
+    }
+    system("pause");
+}
+void deleteAllContacts(){
+
+    if (phoneBook.empty()) {
+        cout << blue << "there is not contacts \n" << reset;
+    } else {
+        cout <<"Are you sure you want to delete all contacts (y/n) ?";
+
+        char test;
+        cin >> test;
+
+        if (test == 'y' || test == 'Y') {
+            phoneBook.clear();
+            cout <<blue<<"All contacts deleted successfully!\n"<<reset;
+        }
+    }
+}
+void deleteContact(const string & _name) {
+
+    int count = 1, count1 = 0;
+    vector<int> index;
+    for (auto &li: phoneBook) {
+        if (strcasecmp(li.getName().c_str(), _name.c_str()) == 0 ||
+            strcasecmp(li.getLastName().c_str(), _name.c_str()) == 0) {
+            index.push_back(count1);
+            cout << count << ":";
+            cout << li;
+            count++;
+        }
+        count1++;
+    }
+    if (!index.empty()) {
+        int s;
+        do {
+            cout << "select number for delete contact :";
+            cin >> s;
+        } while (count <= s || 0 >= s);
+        phoneBook.erase(phoneBook.begin() + index[s - 1]);
+        cout << blue << "Contact deleted successfully!\n" << reset;
+    } else {
+        system("cls");
+        cout << blue << "No contacts found.\n" << reset;
+    }
+}
+
+
+
+void meno(){
+    cout<< "1: Create New Contact \n"
+           "2: Search Contacts\n"
+           "3: Delete Contact\n"
+           "4: Delete All Contacts \n"
+           "5: show Contacts \n"
+           "6: Sort Contact \n"
+           "7: Save and Exit\n";
+}
+int main()
+{
+    loadData();
+    int count;
+    do{
+        meno();
+        cout<<"Enter Your Disert Number : ";
+        cin>>count;
+        checkInput(count);
+    } while (count!=7);
+    return 0;
+}
